@@ -24,8 +24,8 @@ public class ShootPlayer : MonoBehaviour
     private float shootDelay;
     private float shootTime = float.MinValue;
 
-    //пули
-    private List<Bull> bulls=new List<Bull>();
+    //Bulls
+    private List<Bull> bulls = new List<Bull>(); //тут будем хранить экз пуль   
 
     private void Start()
     {
@@ -35,23 +35,26 @@ public class ShootPlayer : MonoBehaviour
         rezulNetManager = dataReg.NetManager();
 
         dataReg.OutPos = outBullet;
-        //
-        InstBulls(3);
-        //
-        shootDelay = actionSettings.ShootDelay;
+        shootDelay =actionSettings.ShootDelay;
+
+        InstBulls(10);
+
         StartCoroutine(Example());
 
     }
 
-    //создание пуль
     private void InstBulls(int count)
     {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) 
         {
-            GameObject bull= Instantiate(bullet, outBullet.position, outBullet.rotation);
-            bulls.Add(bull.GetComponent<Bull>());
+            GameObject bulle =Instantiate(bullet, outBullet.position, outBullet.rotation);
+            Bull scriptBulle = bulle.GetComponent<Bull>();
+
+            scriptBulle.isSet = false;
+            bulls.Add(scriptBulle);
         }
     }
+
 
 
     void Update()
@@ -69,7 +72,7 @@ public class ShootPlayer : MonoBehaviour
                 Shoot();
             }
         }
-
+        
     }
     private IEnumerator Example()
     {
@@ -94,20 +97,21 @@ public class ShootPlayer : MonoBehaviour
 
         //bullFactory.Create();
         CountBull++;
-        //Instantiate(bullet, outBullet.position, outBullet.rotation);
         for (int i = 0; i < bulls.Count; i++)
         {
-            if (bulls[i].IsSet==false)
+            if (bulls[i].isSet==false)
             {
-                bulls[i].ShootBull(outBullet.position, true);
+                bulls[i].ShootBull(true, outBullet);
                 return;
             }
         }
-            
-        //rezulNetManager.NetworkManager.BullInst(outBullet);
-        gunExitParticle.Play();
-        //Photon
 
+
+        //Instantiate(bullet, outBullet.position, outBullet.rotation);
+        //rezulNetManager.NetworkManager.BullInst(outBullet);
+        //gunExitParticle.Play();
+        //Photon
+        
 
     }
 }
